@@ -12,6 +12,7 @@ import tn.esprit.devops_project.repositories.OperatorRepository;
 import tn.esprit.devops_project.repositories.SupplierRepository;
 import tn.esprit.devops_project.services.Iservices.IInvoiceService;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +28,12 @@ public class InvoiceServiceImpl implements IInvoiceService {
 
 	//commentaire
 	//commentaire 2 developper
+
+
+	public Invoice addInvoice(Invoice f) {
+		return invoiceRepository.save(f);
+	}
+
 	@Override
 	public List<Invoice> retrieveAllInvoices() {
 		return invoiceRepository.findAll();
@@ -57,7 +64,7 @@ public class InvoiceServiceImpl implements IInvoiceService {
 	public void assignOperatorToInvoice(Long idOperator, Long idInvoice) {
 		Invoice invoice = invoiceRepository.findById(idInvoice).orElseThrow(() -> new NullPointerException("Invoice not found"));
 		Operator operator = operatorRepository.findById(idOperator).orElseThrow(() -> new NullPointerException("Operator not found"));
-		operator.getInvoices().add(invoice);
+//		operator.getInvoices().add(invoice);
 		operatorRepository.save(operator);
 	}
 

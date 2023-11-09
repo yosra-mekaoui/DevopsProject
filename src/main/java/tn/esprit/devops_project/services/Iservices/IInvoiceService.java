@@ -6,6 +6,10 @@ import java.util.Date;
 import java.util.List;
 
 public interface IInvoiceService {
+
+
+	Invoice addInvoice(Invoice f);
+
 	List<Invoice> retrieveAllInvoices();
 
 	List<Invoice> getInvoicesBySupplier(Long idSupplier);

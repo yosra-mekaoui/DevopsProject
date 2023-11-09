@@ -40,5 +40,12 @@ public class Invoice implements Serializable {
     @JsonIgnore
     Supplier supplier;
 
-	
+
+	public Invoice(float amountDiscount, float amountInvoice, Date dateCreationInvoice, Date dateLastModificationInvoice, Boolean archived) {
+		this.amountDiscount = amountDiscount;
+		this.amountInvoice = amountInvoice;
+		this.dateCreationInvoice = dateCreationInvoice;
+		this.dateLastModificationInvoice = dateLastModificationInvoice;
+		this.archived = archived;
+	}
 }
