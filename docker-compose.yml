@@ -24,6 +24,7 @@ services:
       - mynetwork
 
 volumes:
-    mysql-data:
+  db:
+
 networks:
-    mynetwork:
+  mynetwork:
