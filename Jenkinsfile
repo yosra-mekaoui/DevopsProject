@@ -23,13 +23,23 @@ pipeline {
             }
         }
 
-      stage('Unit Tests') {
+      stage('Mock and JUnit Tests') {
              steps{
 
                  // tests
                  sh "mvn test "
              }
       }
+
+       stage('Code Quality Check via SonarQube') {
+                  steps{
+
+                   		sh " mvn clean verify sonar:sonar -Dsonar.projectKey=DevopsProject -Dsonar.projectName='DevopsProject' -Dsonar.host.url=http://192.168.33.10:9000 -Dsonar.token=squ_33f99e3d4ce0aad8edfb16672f9b601ca5f4858a"
+
+                  }
+              }
+
+
 
 
 
