@@ -1,86 +1,93 @@
 package tn.esprit.devops_project.services;
 
 
-
-import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import tn.esprit.devops_project.entities.Invoice;
-import tn.esprit.devops_project.services.Iservices.IInvoiceService;
+import tn.esprit.devops_project.repositories.InvoiceRepository;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
 
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@Slf4j
+
+@ExtendWith(MockitoExtension.class)
+
 public class InvoiceServiceImplTest {
 
-    @Autowired
-    IInvoiceService invoiceService;
+    @Mock
+    private  InvoiceRepository invoiceRepository ;
 
-
-
-    @Test
-    public void testAddInvoice() throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date1 = dateFormat.parse("30/09/2000");
-        Date date2 = dateFormat.parse("25/10/2000");
-        Invoice I = new Invoice(1f,2f,date1,date2,false);
-        Invoice savedInvoice= invoiceService.addInvoice(I);
-        assertNotNull(savedInvoice.getIdInvoice());
-    }
+    @InjectMocks
+    private InvoiceServiceImpl invoiceService;
 
     @Test
-    public void testRetrieveInvoiceByid() {
-        Invoice invoice = invoiceService.retrieveInvoice(1L);
-        assertNotNull(invoice.getIdInvoice());
-    }
+    public void testRetrieveAllInvoices() {
+        // Create a list of invoices
+        Invoice invoice1 = new Invoice(50.0f, 1000.0f, new Date(), new Date(), false);
+
+        Invoice invoice2 = new Invoice(60.0f, 1000.0f, new Date(), new Date(), false);
 
 
 
-    @Test
-    public void testRetrieveAllInvoives() throws ParseException {
-        List<Invoice> factures = invoiceService.retrieveAllInvoices();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date1 = dateFormat.parse("30/09/2000");
-        Date date2 = dateFormat.parse("25/10/2000");
-        int expected = factures.size();
-        Invoice f = new Invoice();
+        List<Invoice> invoiceList = Arrays.asList(invoice1, invoice2);
 
-        f.setDateCreationInvoice(date1);
-        f.setDateLastModificationInvoice(date2);
-        f.setArchived(true);
-        f.setAmountInvoice(1.5f);
-        Invoice savedFacture= invoiceService.addInvoice(f);
-        assertEquals(expected + 1, invoiceService.retrieveAllInvoices().size());
+        // Define the behavior of the mock repository
+        when(invoiceRepository.findAll()).thenReturn(invoiceList);
+
+        // Call the service method
+        List<Invoice> result = invoiceService.retrieveAllInvoices();
+
+        // Verify the service method and its outcome
+        verify(invoiceRepository, times(1)).findAll();
+        // Verify the result
+        assertEquals(2, result.size());
     }
 
 
+    @Test
+    public void testAddInvoice() {
+        // Create a reglement
+        Invoice invoice1 = new Invoice(90.0f, 150.0f, new Date(), new Date(), true);
 
-//    @Test
-//    public void testCancelInvoice() throws ParseException  {
-//        Invoice sa = new Invoice();
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-//        Date date1 = dateFormat.parse("30/09/2020");
-//        Date date2 = dateFormat.parse("05/12/2022");
-//        sa.setDateCreationInvoice(date1);
-//        sa.setDateLastModificationInvoice(date2);
-//        sa.setArchived(true);
-//        sa.setAmountInvoice(1.5f);
-//        Invoice savedfacture= invoiceService.addInvoice(sa);
-//        invoiceService.cancelInvoice(savedfacture.getIdInvoice());
-//        assertNotNull(sa.getIdInvoice());
-//    }
+        when(invoiceRepository.save(invoice1)).thenReturn(invoice1);
+
+        // Call the method to test
+        Invoice addedInvoice = invoiceService.addInvoice(invoice1);
+
+        // Verify if the method was called
+        verify(invoiceRepository, times(1)).save(invoice1);
+        // Verify the result
+        assertEquals(invoice1, addedInvoice);
+    }
+
+
+    @Test
+    public void testRetrieveInvoiceById() {
+        // Arrange
+        long invoiceId = 1L;
+        Invoice mockInvoice = new Invoice(); // Assuming Invoice is your entity class
+        when(invoiceRepository.findById(invoiceId)).thenReturn(java.util.Optional.of(mockInvoice));
+
+        // Act
+        Invoice retrievedInvoice = invoiceService.retrieveInvoice(invoiceId);
+
+        // Assert
+        assertNotNull(retrievedInvoice);
+        assertEquals(mockInvoice, retrievedInvoice);
+
+        // Verify that the repository's findById method was called with the correct ID
+        verify(invoiceRepository, times(1)).findById(invoiceId);
+    }
+
 
 
 
