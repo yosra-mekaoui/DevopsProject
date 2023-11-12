@@ -13,7 +13,7 @@ services:
     networks:
       - mynetwork
 
-  achat-backend:
+  backend:
     image: yosramekaoui772000/devopsproject-2.1
     restart: unless-stopped
     ports:
