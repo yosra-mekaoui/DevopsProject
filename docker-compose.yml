@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  mysqldb:
+    image: mysql:5.7
+    restart: unless-stopped
+    ports:
+      - 3307:3306
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    networks:
+      - mynetwork
+
+  achat-backend:
+    image: yosramekaoui772000/devopsproject-2.1
+    restart: unless-stopped
+    ports:
+      - 8082:8082
+    depends_on:
+      - mysqldb
+    networks:
+      - mynetwork
+
+volumes:
+  db:
+
+networks:
+  mynetwork:
