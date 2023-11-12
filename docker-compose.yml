@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   mysqldb:
     image: mysql:5.7
@@ -21,7 +23,7 @@ services:
     networks:
       - mynetwork
 
-  volumes:
-    db:
-  networks:
+volumes:
+    mysql-data:
+networks:
     mynetwork:
