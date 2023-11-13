@@ -1,10 +1,10 @@
-FROM openjdk:11-jre-slim
-EXPOSE 8082
+FROM openjdk:11
+
+# Set the working directory
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y curl
+COPY target/*.jar /app.jar
 
-RUN curl -o devopsproject-2.1.jar -L "http://192.168.117.135:8081/repository/maven-releases/tn/esprit/devopsproject/2.1/devopsproject-2.1.jar"
+EXPOSE 8089
 
-
-ENTRYPOINT ["java", "-jar", "devopsproject-2.1.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
