@@ -1,30 +1,29 @@
-version: '3.8'
-
+version: '3'
 services:
-  mysqldb:
-    image: mysql:5.7
-    restart: unless-stopped
+  mysql-db:
+    image: mysql:latest
+    container_name: docker-compose-mysql-db
     ports:
-      - 3307:3306
-    volumes:
-      - db:/var/lib/mysql
+      - "3307:3306"
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=devops
     networks:
-      - mynetwork
+      - my-network
 
-  achat-backend:
-    image: yosramekaoui772000/devopsproject-2.1
-    restart: unless-stopped
+  spring-boot-app:
+    image: yosramekaoui772000/devopsproject
+    container_name: app-back
     ports:
-      - 8082:8082
+      - "8088:8089"
     depends_on:
-      - mysqldb
+      - mysql-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://docker-compose-mysql-db:3306/devops?&createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
     networks:
-      - mynetwork
-
-volumes:
-  db:
+      - my-network
 
 networks:
-  mynetwork:
+  my-network:
