@@ -51,7 +51,7 @@ stage('Publish to Nexus') {
 
 
 
-            				sh 'docker login -u oussamaghwiss --password s_*E&zB$vu7c5-f'
+            				sh 'docker login -u oussamaghwiss  --password dckr_pat_Pjv7V7OV0tF-GrD1zQO6OOKvDNM'
                          }
             		  }
 
