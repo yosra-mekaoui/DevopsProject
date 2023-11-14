@@ -61,6 +61,8 @@ pipeline {
         stage('Docker Image') {
             steps {
                 sh 'docker push oussamaghwiss/spring-app:latest'
+
+
             }
         }
 
