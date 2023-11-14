@@ -50,6 +50,9 @@ pipeline {
                 }
       stage('Login Dockerhub') {
                          steps {
+
+
+
             				sh 'docker login -u oussamaghwiss --password s_*E&zB$vu7c5-f'
                          }
             		  }
