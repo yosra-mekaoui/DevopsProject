@@ -48,18 +48,22 @@ pipeline {
             }
         }
 
+
+
+        stage('Build Docker Image') {
+                    steps {
+                        script {
+                            sh 'docker build -t oussamaghwiss/spring-app:latest .'
+                        }
+                    }
+        }
+
         stage('Docker Image') {
             steps {
                 sh 'docker push oussamaghwiss/spring-app:latest'
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    sh 'docker build -t oussamaghwiss/spring-app:latest .'
-                }
-            }
-        }
+
     }
 }
