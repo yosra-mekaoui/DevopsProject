@@ -70,7 +70,7 @@ pipeline {
         stage('MySQL Containers') {
              steps {
                   script {
-                     sh 'docker-compose up -d'
+                     sh 'docker compose up -d'
                         }
                                }
                      }
