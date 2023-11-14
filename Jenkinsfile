@@ -1,7 +1,6 @@
 pipeline {
     agent any
 
-
     stages {
         stage('Git') {
             steps {
@@ -16,6 +15,7 @@ pipeline {
                 sh "mvn clean "
             }
         }
+
         stage('Compile') {
             steps {
                 // Execute 'mvn compile' command
@@ -23,44 +23,43 @@ pipeline {
             }
         }
 
-      stage('Mock and JUnit Tests') {
-             steps{
+        stage('Mock and JUnit Tests') {
+            steps {
+                // tests
+                sh "mvn test "
+            }
+        }
 
-                 // tests
-                 sh "mvn test "
-             }
-      }
+        stage('Code Quality Check via SonarQube') {
+            steps {
+                sh "mvn clean verify sonar:sonar -Dsonar.projectKey=DevopsProject -Dsonar.projectName='DevopsProject' -Dsonar.host.url=http://192.168.33.10:9000 -Dsonar.token=squ_33f99e3d4ce0aad8edfb16672f9b601ca5f4858a"
+            }
+        }
 
-       stage('Code Quality Check via SonarQube') {
-                  steps{
+        stage('Publish to Nexus') {
+            steps {
+                sh 'mvn clean package deploy:deploy-file -DgroupId=tn.esprit -DartifactId=DevOps_Project -Dversion=1 -DgeneratePom=true -Dpackaging=jar -DrepositoryId=maven-releases -Durl=http://192.168.33.10:8081/repository/maven-releases/ -Dfile=target/DevOps_Project-1.jar -DupdateReleaseInfo=true'
+            }
+        }
 
-                   		sh " mvn clean verify sonar:sonar -Dsonar.projectKey=DevopsProject -Dsonar.projectName='DevopsProject' -Dsonar.host.url=http://192.168.33.10:9000 -Dsonar.token=squ_33f99e3d4ce0aad8edfb16672f9b601ca5f4858a"
+        stage('Login Dockerhub') {
+            steps {
+                sh 'docker login -u oussamaghwiss --password dckr_pat_Pjv7V7OV0tF-GrD1zQO6OOKvDNM'
+            }
+        }
 
-                  }
-              }
+        stage('Docker Image') {
+            steps {
+                sh 'docker push oussamaghwiss/spring-app:latest'
+            }
+        }
 
-
-stage('Publish to Nexus') {
-    steps {
-        sh 'mvn clean package deploy:deploy-file -DgroupId=tn.esprit -DartifactId=DevOps_Project -Dversion=1 -DgeneratePom=true -Dpackaging=jar -DrepositoryId=maven-releases -Durl=http://192.168.33.10:8081/repository/maven-releases/ -Dfile=target/DevOps_Project-1.jar -DupdateReleaseInfo=true'
-    }
-}
-
-      stage('Login Dockerhub') {
-                         steps {
-
-
-
-            				sh 'docker login -u oussamaghwiss  --password dckr_pat_Pjv7V7OV0tF-GrD1zQO6OOKvDNM'
-                         }
-            		  }
-
-
-
-
-
-
-
-
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh 'docker build -t oussamaghwiss/spring-app:latest .'
+                }
+            }
+        }
     }
 }
