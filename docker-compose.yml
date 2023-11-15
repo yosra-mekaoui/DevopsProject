@@ -25,5 +25,14 @@ services:
     networks:
       - my-network
 
+  front:
+    image: yosramekaoui772000/frontproject
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    networks:
+      - mynetwork
+
 networks:
   my-network:
