@@ -32,7 +32,7 @@ services:
     depends_on:
       - spring-boot-app
     networks:
-      - mynetwork
+      - my-network
 
 networks:
   my-network:
